@@ -1,0 +1,94 @@
+{
+  "name": "qi-sync-lambda",
+  "version": "0.0.0",
+  "description": "qi-sync-lambda",
+  "license": "MIT",
+  "repository": "",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "keywords": [
+    ""
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib && rimraf coverage",
+    "format": "prettier --write \"{src,__tests__}/**/*.ts\" --single-quote --trailing-comma es5",
+    "lint": "tslint --force --format verbose \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build",
+    "prebuild": "npm run clean && npm run format && npm run lint && echo Using TypeScript && tsc --version",
+    "build": "tsc --pretty",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "watch": "npm run build -- --watch",
+    "watch:test": "jest --watch",
+    "offline": "concurrently --names \"PURGE_LOCAL_S3,SERVERLESS_OFFLINE\" -c \"bgRed,bgGreen\" --kill-others-on-fail \"rm -rf ./s3-local \"  \"SLS_DEBUG=*  serverless offline start --stage local\" ",
+    "preoffline": "npm i",
+    "deploy": "SLS_DEBUG=* serverless deploy --stage dev && SLS_DEBUG=* serverless s3deploy --stage dev",
+    "remove": "SLS_DEBUG=* serverless remove --stage dev"
+  },
+  "dependencies": {
+    "pg": "^7.5.0",
+    "pg-hstore": "^2.3.2",
+    "reflect-metadata": "^0.1.12",
+    "sequelize": "^4.39.1",
+    "sequelize-typescript": "^0.6.6",
+    "tedious": "^2.6.4",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.13",
+    "@types/aws-sdk": "^2.7.0",
+    "@types/jest": "^22.0.1",
+    "@types/node": "^8.0.0",
+    "@types/pg": "^7.4.11",
+    "@types/reflect-metadata": "^0.1.0",
+    "@types/sequelize": "^4.27.28",
+    "@types/uuid": "^3.4.4",
+    "aws-lambda": "^0.1.2",
+    "aws-sdk": "^2.335.0",
+    "concurrently": "^4.0.1",
+    "coveralls": "^2.0.0",
+    "jest": "^22.0.4",
+    "prettier": "^1.5.2",
+    "rimraf": "^2.0.0",
+    "serverless": "^1.32.0",
+    "serverless-offline": "^3.27.0",
+    "serverless-plugin-existing-s3": "^2.2.2",
+    "serverless-s3-local": "^0.3.17",
+    "serverless-s3-remover": "^0.6.0",
+    "serverless-webpack": "^5.2.0",
+    "ts-jest": "^22.0.1",
+    "ts-loader": "^5.2.2",
+    "ts-node": "^3.2.0",
+    "tslint": "^5.0.0",
+    "tslint-config-prettier": "^1.1.0",
+    "typedi-no-dynamic-require": "^0.2.0",
+    "typescript": "^2.3.0",
+    "webpack": "^4.20.2",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "jest": {
+    "transform": {
+      ".(ts)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "moduleNameMapper": {
+      "^@sync/(.*)": "<rootDir>/src/$1"
+    },
+    "testEnvironment": "node"
+  }
+}

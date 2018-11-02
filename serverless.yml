@@ -1,0 +1,74 @@
+
+
+service: qi-sync-battery
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-2
+  environment: ${file(./src/config/env.yml):${opt:stage, self:custom.defaults.stage}}
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - s3:ListBucket
+      - s3:PutObject
+      - s3:GetObject  
+    Resource: '*'
+
+custom:
+  names:
+    s3:
+      bucket_name: ${self:service}-${opt:stage}-resultsjson    
+  s3:
+    port: 8000
+    directory: ./s3-local 
+  defaults:
+    stage: dev
+  webpack:
+    includeModules: true # enable auto-packing of external modules
+
+  remover:
+      prompt: true
+      buckets:
+         - ${self:service}-dev-resultsjson 
+      
+     
+functions:
+  # testS3Webput:
+  #     handler: src/handlers/s3-put.handle
+  #     events:
+  #       - http:
+  #           method: get
+  #           path: /addjson
+  resultJsonS3Hook:
+    handler: src/handlers/s3-json.handle
+    events:
+      #- s3: resultjsons        
+      - existingS3:
+          bucket: ${self:custom.names.s3.bucket_name}
+          events: 
+            - s3:ObjectCreated:*
+          rules:
+            - prefix: resultJsons/
+            - suffix: .json
+package:
+  include:
+    - src/**/*
+    - src/config/env.yml
+  
+plugins:
+ - serverless-webpack
+ - serverless-offline
+ - serverless-s3-local
+ - serverless-s3-remover
+ - serverless-plugin-existing-s3
+ 
+resources:
+  Resources:
+      S3Bucket:
+        Type: AWS::S3::Bucket
+        DeletionPolicy: Retain
+        Properties:
+          BucketName: ${self:custom.names.s3.bucket_name}
+       
+      
