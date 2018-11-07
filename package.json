@@ -39,8 +39,7 @@
     "reflect-metadata": "^0.1.12",
     "sequelize": "^4.39.1",
     "sequelize-typescript": "^0.6.6",
-    "tedious": "^2.6.4",
-    "uuid": "^3.3.2"
+    "tedious": "^2.6.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.13",
@@ -71,6 +70,7 @@
     "tslint-config-prettier": "^1.1.0",
     "typedi-no-dynamic-require": "^0.2.0",
     "typescript": "^2.3.0",
+    "uuid": "^3.3.2",
     "webpack": "^4.20.2",
     "webpack-node-externals": "^1.7.2"
   },

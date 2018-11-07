@@ -1,4 +1,5 @@
-import { Model, Table, Column, PrimaryKey } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, BeforeCreate, Table } from 'sequelize-typescript';
+import { v4 } from 'uuid';
 
 @Table({
     tableName: 'pearson_currency',
@@ -8,12 +9,7 @@ import { Model, Table, Column, PrimaryKey } from 'sequelize-typescript';
     version: true
 })
 export class Currency extends Model<Currency> {
-    
-
-    @PrimaryKey
-    @Column
-    id: string;
-
+   
     @Column
     code: string;
 
@@ -28,4 +24,13 @@ export class Currency extends Model<Currency> {
 
     @Column({field : 'last_updated'})
     lastUpdated: Date;
+
+    @PrimaryKey
+    @Column
+    id: string;  
+
+    @BeforeCreate
+    static addGuid<T extends Model<T>> (instance: T) {
+        instance.id = v4().replace(/-/g, "").toUpperCase();
+    }
 }
