@@ -5,10 +5,12 @@ import { Patient } from './patient';
 import { Subtest } from './subtest';
 import { Test } from './test';
 import { AssessmentGradeLevel } from './assessment-grade';
+import { AssessmentSubtest } from './assessment-subtest';
+import { AssessmentSubtestData } from './assessment-subtestdata';
 
 export const models = [
-    Currency, Assessment, GradeLevel, Patient, Subtest, Test, AssessmentGradeLevel
+    Currency, Assessment, GradeLevel, Patient, Subtest, Test, AssessmentGradeLevel, AssessmentSubtest, AssessmentSubtestData
 ];
 
-export { Currency, Assessment, GradeLevel, Patient, Subtest, Test, AssessmentGradeLevel };
+export { Currency, Assessment, GradeLevel, Patient, Subtest, Test, AssessmentGradeLevel, AssessmentSubtest, AssessmentSubtestData };
 

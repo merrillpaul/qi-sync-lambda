@@ -5,8 +5,6 @@ import { Test } from './test';
 @Table({
     tableName: 'subtest',
     modelName: 'Subtest',
-    timestamps: false,
-    underscoredAll: true,
     version: true
 })
 export class Subtest extends Model<Subtest> {

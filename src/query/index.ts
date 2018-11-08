@@ -14,6 +14,11 @@ export class QueryService {
             dialect: 'postgres',
             username: 'chair_user',
             password: 'pearson',
+            define: {
+                timestamps: false,
+                underscoredAll: true,
+                underscored: true
+            },
             pool: {
                 max: 5,
                 min: 0,

@@ -1,11 +1,10 @@
 import { Patient } from "./patient";
-import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, DataType, BelongsToMany } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, DataType, BelongsToMany, HasMany } from 'sequelize-typescript';
 import { GradeLevel } from ".";
 import { AssessmentGradeLevel } from "./assessment-grade";
+import { AssessmentSubtest } from "./assessment-subtest";
 
 @Table({
-    timestamps: false,
-    underscoredAll: true,
     version: true,
     tableName: 'assessment',
     modelName: 'Assessment'
@@ -46,8 +45,14 @@ export class Assessment extends Model<Assessment>  {
     @Column({field: 'years_of_education'})
     yearsOfEducation: string;
 
+    @Column({field: 'results_json'})
+    resultsJson: string;
+
     @BelongsToMany(() => GradeLevel, () => AssessmentGradeLevel)
     grades: GradeLevel[];
+
+    @HasMany(() => AssessmentSubtest)
+    assessmentSubtests: AssessmentSubtest[];
 
     @PrimaryKey
     @Column

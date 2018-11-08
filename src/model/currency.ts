@@ -4,8 +4,6 @@ import { v4 } from 'uuid';
 @Table({
     tableName: 'pearson_currency',
     modelName: 'Currency',
-    timestamps: false,
-    underscoredAll: true,
     version: true
 })
 export class Currency extends Model<Currency> {

@@ -1,8 +1,6 @@
 import { Model, PrimaryKey, Column, Table } from 'sequelize-typescript';
 
 @Table({
-    timestamps: false,
-    underscoredAll: true,
     version: true,
     tableName: 'patient',
     modelName: 'Patient'

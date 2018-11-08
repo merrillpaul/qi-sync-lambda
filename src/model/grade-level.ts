@@ -6,8 +6,6 @@ import { AssessmentGradeLevel } from './assessment-grade';
 @Table({
     tableName: 'grade_level',
     modelName: 'GradeLevel',
-    timestamps: false,
-    underscoredAll: true,
     version: true
 })
 export class GradeLevel extends Model<GradeLevel> {
