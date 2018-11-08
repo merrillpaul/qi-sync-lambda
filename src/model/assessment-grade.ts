@@ -2,7 +2,6 @@ import { Model, Column, Table, ForeignKey } from 'sequelize-typescript';
 import { GradeLevel, Assessment } from ".";
 
 @Table({
-  version: false,
   tableName: 'assessment_grade_level',
   modelName: 'AssessmentGradeLevel'
 })

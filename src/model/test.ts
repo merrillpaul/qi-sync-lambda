@@ -1,11 +1,10 @@
-import { Model, PrimaryKey, Column, Table, HasMany } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, HasMany, DataType } from 'sequelize-typescript';
 import { Subtest } from './subtest';
 import { GradeLevel } from './grade-level';
 
 @Table({
     tableName: 'test',
-    modelName: 'Test',
-    version: true
+    modelName: 'Test'
 })
 export class Test extends Model<Test> {
     

@@ -17,7 +17,8 @@ export class QueryService {
             define: {
                 timestamps: false,
                 underscoredAll: true,
-                underscored: true
+                underscored: true,
+                version: false
             },
             pool: {
                 max: 5,

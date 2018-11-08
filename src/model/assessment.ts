@@ -1,11 +1,10 @@
 import { Patient } from "./patient";
-import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, DataType, BelongsToMany, HasMany } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, DataType, BelongsToMany, HasMany, BeforeUpdate } from 'sequelize-typescript';
 import { GradeLevel } from ".";
 import { AssessmentGradeLevel } from "./assessment-grade";
 import { AssessmentSubtest } from "./assessment-subtest";
 
 @Table({
-    version: true,
     tableName: 'assessment',
     modelName: 'Assessment'
 })
@@ -14,6 +13,8 @@ export class Assessment extends Model<Assessment>  {
     @Column({field : 'export_time'})
     exportTime: Date;    
 
+    @Column({field : 'version', type: DataType.BIGINT})
+    version: number;
     
     get syncSucceeded(): boolean {
       return 1 === this.synced;
@@ -56,6 +57,11 @@ export class Assessment extends Model<Assessment>  {
 
     @PrimaryKey
     @Column
-    id: string;     
+    id: string;  
+    
+    @BeforeUpdate
+    static incrementVersion<T extends Model<T>>(instance: T) {
+        instance.version = parseInt(instance.version, 10) + 1;
+    }
 
 }

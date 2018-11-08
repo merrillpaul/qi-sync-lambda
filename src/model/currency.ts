@@ -1,10 +1,9 @@
-import { Model, PrimaryKey, Column, BeforeCreate, Table } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, BeforeCreate, Table, DataType, BeforeUpdate } from 'sequelize-typescript';
 import { v4 } from 'uuid';
 
 @Table({
     tableName: 'pearson_currency',
-    modelName: 'Currency',
-    version: true
+    modelName: 'Currency'
 })
 export class Currency extends Model<Currency> {
    
@@ -13,6 +12,9 @@ export class Currency extends Model<Currency> {
 
     @Column({field : 'currency_symbol'})
     currencySymbol: string;
+
+    @Column({field : 'version', type: DataType.BIGINT})
+    version: number;
 
     @Column({field : 'modified_by'})
     modifiedBy: string;
@@ -29,6 +31,12 @@ export class Currency extends Model<Currency> {
 
     @BeforeCreate
     static addGuid<T extends Model<T>> (instance: T) {
+        instance.version = 0;
         instance.id = v4().replace(/-/g, "").toUpperCase();
+    }
+
+    @BeforeUpdate
+    static incrementVersion<T extends Model<T>>(instance: T) {
+        instance.version = parseInt(instance.version, 10) + 1;
     }
 }

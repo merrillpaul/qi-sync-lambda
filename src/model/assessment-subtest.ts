@@ -1,12 +1,11 @@
-import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, BeforeCreate, HasMany, DataType } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, BeforeCreate, HasMany, DataType, BeforeUpdate } from 'sequelize-typescript';
 import { v4 } from 'uuid';
 import { Assessment } from './assessment';
 import { AssessmentSubtestData } from '.';
 
 @Table({
     tableName: 'assessment_subtest',
-    modelName: 'AssessmentSubtest',
-    version: true
+    modelName: 'AssessmentSubtest'
 })
 export class AssessmentSubtest extends Model<AssessmentSubtest> {
    
@@ -56,6 +55,9 @@ export class AssessmentSubtest extends Model<AssessmentSubtest> {
     @Column({ type: DataType.SMALLINT, field: 'discontinue_used' })
     discontinued: number;
 
+    @Column({field : 'version', type: DataType.BIGINT})
+    version: number;
+
     @BelongsTo(() => Assessment)
     assessment: Assessment;
 
@@ -72,6 +74,12 @@ export class AssessmentSubtest extends Model<AssessmentSubtest> {
 
     @BeforeCreate
     static addGuid<T extends Model<T>>(instance: T) {
+        instance.version = 0;
         instance.id = v4().replace(/-/g, "").toUpperCase();
+    }
+
+    @BeforeUpdate
+    static incrementVersion<T extends Model<T>>(instance: T) {
+        instance.version = parseInt(instance.version, 10) + 1;
     }
 }

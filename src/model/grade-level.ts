@@ -1,12 +1,11 @@
-import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, BelongsToMany } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, BelongsToMany, DataType, BeforeUpdate } from 'sequelize-typescript';
 import { Test } from './test';
 import { Assessment } from './assessment';
 import { AssessmentGradeLevel } from './assessment-grade';
 
 @Table({
     tableName: 'grade_level',
-    modelName: 'GradeLevel',
-    version: true
+    modelName: 'GradeLevel'
 })
 export class GradeLevel extends Model<GradeLevel> {
     
@@ -28,5 +27,5 @@ export class GradeLevel extends Model<GradeLevel> {
     id: string;  
 
     @BelongsToMany(() => Assessment, () => AssessmentGradeLevel)
-    assessments: Assessment[];
+    assessments: Assessment[];    
 }

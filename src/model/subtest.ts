@@ -1,11 +1,10 @@
-import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, BelongsTo, ForeignKey, DataType } from 'sequelize-typescript';
 import { Test } from './test';
 
 
 @Table({
     tableName: 'subtest',
-    modelName: 'Subtest',
-    version: true
+    modelName: 'Subtest'
 })
 export class Subtest extends Model<Subtest> {
     
@@ -24,7 +23,6 @@ export class Subtest extends Model<Subtest> {
     @ForeignKey(() => Test)
     @Column({field : 'test_id'})
     public testId: string;
-
 
     @PrimaryKey
     @Column

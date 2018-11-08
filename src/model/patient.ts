@@ -1,7 +1,6 @@
-import { Model, PrimaryKey, Column, Table } from 'sequelize-typescript';
+import { Model, PrimaryKey, Column, Table, DataType, BeforeUpdate } from 'sequelize-typescript';
 
 @Table({
-    version: true,
     tableName: 'patient',
     modelName: 'Patient'
 })
@@ -21,8 +20,16 @@ export class Patient extends Model<Patient> {
 
     @Column({field : 'last_name'})
     lastName: string;
+
+    @Column({field : 'version', type: DataType.BIGINT})
+    version: number;
     
     @PrimaryKey
     @Column
     id: string;
+
+    @BeforeUpdate
+    static incrementVersion<T extends Model<T>>(instance: T) {
+        instance.version = parseInt(instance.version, 10) + 1;
+    }
 }
