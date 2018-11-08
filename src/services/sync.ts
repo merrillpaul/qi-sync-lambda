@@ -2,7 +2,7 @@ import { Service, Inject } from "typedi";
 import { S3Service } from "./s3";
 import { QueryService } from "@sync/query";
 import { Sequelize } from "sequelize-typescript";
-import { Assessment, Patient, GradeLevel, Test, AssessmentSubtestData, Subtest } from "@sync/model";
+import { Assessment, Patient, GradeLevel, Test, AssessmentSubtestData, Subtest, JsonUpload } from "@sync/model";
 import { ClientService } from "./client";
 import { AssessmentGradeLevel } from "@sync/model/assessment-grade";
 import { Transaction } from "sequelize";
@@ -27,7 +27,9 @@ export class SyncService {
 
     public async sync(jsonS3Key: string): Promise<boolean> {
         const dao: Sequelize = this.queryIntf.getSequalize();
-        const jsonString: string = await this.s3Service.readObjectAsText(jsonS3Key);
+        const json: JsonUpload = await this.s3Service.readObjectAsText(jsonS3Key);
+        console.log(`S3 metadata`, json.userName, json.returnControl);
+        const jsonString: string = json.json;
         let resultArchiveId: string;
         await dao.transaction(async (t) => {
             resultArchiveId = await this.createResultArchive(jsonString);
@@ -56,12 +58,13 @@ export class SyncService {
                 } else if (!assessment.exportTime || newExportTime > assessment.exportTime) {
                     // handle it
                     assessment.syncSucceeded = false;
-                    await this.handleKnownAssessment(parsed, assessment, jsonString, t);
+                    await this.handleKnownAssessment(parsed, assessment, jsonString, json.returnControl, t);
                 }
 
                 await this.applyAssessmentToResultArchive(assessment.id, resultArchiveId, t);
                 assessment.syncSucceeded = true;
                 await assessment.save();
+                
             } catch (e) {
                 t.rollback();
                 console.error(`Error in sync`, e);
@@ -98,14 +101,14 @@ export class SyncService {
         return;
     }
 
-    private async handleKnownAssessment(battery: any, assessment: Assessment, jsonString: string, t: any): Promise<void> {
+    private async handleKnownAssessment(battery: any, assessment: Assessment, jsonString: string, returnControl: boolean, t: any): Promise<void> {
         const patient: Patient = await this.clientService.updatePatientFromJson(battery.patient, assessment.patient, t);
-        await this.updateAssessment(assessment, battery, jsonString, patient, t);
+        await this.updateAssessment(assessment, battery, jsonString, patient, returnControl, t);
         return;
     }
 
 
-    private async updateAssessment(assessment: Assessment, parsed: any, jsonString: string, patient: Patient, t: any): Promise<void> {
+    private async updateAssessment(assessment: Assessment, parsed: any, jsonString: string, patient: Patient, returnControl: boolean, t: any): Promise<void> {
         assessment.patient = patient;
         assessment.resultsJson = jsonString;
         const updatedTitle: string = parsed.identifier;
@@ -125,6 +128,9 @@ export class SyncService {
         await this.updateAssessmentSubtests(assessment, parsed, t);
         if (assessment.progressState === 'PENDING') {
             assessment.progressState = 'GIVE';
+        }
+        if (returnControl) {
+            assessment.progressState = 'COMPLETE';
         }
         return;
     }

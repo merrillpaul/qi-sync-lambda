@@ -14,7 +14,7 @@
 ## Curl to upload to S3
 
 ```sh
-curl -X PUT -T ./__tests__/jsons/1.json -H "Content-Type: application/json"  http://localhost:8000/qi-sync-battery-local-resultsjson/resultJsons/1001/data.json
+curl -X PUT -T ./__tests__/jsons/3.json -H "Content-Type: application/json"  -H "x-amz-meta-pract: Jane" -H "x-amz-meta-returnControl: 0" http://localhost:8000/qi-sync-battery-local-resultsjson/resultJsons/1001/data.json
 ```
 
 or full curl command -
