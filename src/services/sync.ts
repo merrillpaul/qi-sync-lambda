@@ -107,6 +107,7 @@ export class SyncService {
 
     private async updateAssessment(assessment: Assessment, parsed: any, jsonString: string, patient: Patient, t: any): Promise<void> {
         assessment.patient = patient;
+        assessment.resultsJson = jsonString;
         const updatedTitle: string = parsed.identifier;
 
         if (updatedTitle) {
