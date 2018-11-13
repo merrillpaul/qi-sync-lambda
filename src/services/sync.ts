@@ -44,7 +44,7 @@ export class SyncService {
                     throw new Error(errorMsg);
                 }
                 const newExportTime: Date = new Date(parsed.exportTime);
-                const assessment = await Assessment.findById(id, {
+                const assessment: Assessment|null = await Assessment.findById(id, {
                     include: [
                         {
                             model: Patient
@@ -52,8 +52,9 @@ export class SyncService {
                             model: AssessmentSubtest
                         }
                     ]
-                }) as Assessment;
-                if (!assessment) {
+                });
+                if (assessment === null) {
+                    console.error(`assessment ${id} not found - cannot proceed`);
                     throw new Error(`assessment ${id} not found - cannot proceed`);
                 } else if (!assessment.exportTime || newExportTime > assessment.exportTime) {
                     // handle it
