@@ -5,20 +5,26 @@ service: qi-sync-battery
 provider:
   name: aws
   runtime: nodejs8.10
-  region: us-east-2
+  region: ${opt:region, self:custom.defaultRegion}
   environment: ${file(./src/config/env.yml):${opt:stage, self:custom.defaults.stage}}
+  timeout: 10
+  # vpc:
+  #   securityGroupIds:
+  #     - sg-3710345f
+  #   subnetIds:
+  #     - subnet-8a0f7fc7
+  #     - subnet-fa0cf192
   iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - s3:ListBucket
-      - s3:PutObject
-      - s3:GetObject  
-    Resource: '*'
+      - Effect: Allow
+        Action:
+          - s3:*
+        Resource: "*"
 
 custom:
+  defaultRegion: us-east-2
   names:
     s3:
-      bucket_name: ${self:service}-${opt:stage}-resultsjson    
+      bucket_name: ${self:service}-${opt:stage}-resultsjson
   s3:
     port: 8000
     directory: ./s3-local 
@@ -34,12 +40,12 @@ custom:
       
      
 functions:
-  # testS3Webput:
-  #     handler: src/handlers/s3-put.handle
-  #     events:
-  #       - http:
-  #           method: get
-  #           path: /addjson
+  testS3Webput:
+      handler: src/handlers/s3-put.handle
+      events:
+        - http:
+            method: get
+            path: /addjson
   resultJsonS3Hook:
     handler: src/handlers/s3-json.handle
     events:
@@ -63,12 +69,12 @@ plugins:
  - serverless-s3-remover
  - serverless-plugin-existing-s3
  
-resources:
-  Resources:
-      S3Bucket:
-        Type: AWS::S3::Bucket
-        DeletionPolicy: Retain
-        Properties:
-          BucketName: ${self:custom.names.s3.bucket_name}
+# resources:
+#   Resources:
+#       S3Bucket:
+#         Type: AWS::S3::Bucket
+#         DeletionPolicy: Retain
+#         Properties:
+#           BucketName: ${self:custom.names.s3.bucket_name}
        
       

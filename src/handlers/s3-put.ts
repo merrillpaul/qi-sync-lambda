@@ -16,6 +16,10 @@ export const handle: Handler = (event: any, context: any, callback: Callback) =>
         Bucket: process.env.BUCKET as string,
         Key: `resultJsons/${uuid()}/data.json`,
         ContentType: 'application/json',
+        Metadata: {
+            pract: 'Joe',
+            returnControl: "1"
+        },
         Body: Buffer.from(JSON.stringify({
             id: uuid(),
             name: `NAME_${uuid()}`

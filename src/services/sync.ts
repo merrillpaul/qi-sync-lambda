@@ -5,7 +5,6 @@ import { Sequelize } from "sequelize-typescript";
 import { Assessment, Patient, GradeLevel, Test, AssessmentSubtestData, Subtest, JsonUpload } from "@sync/model";
 import { ClientService } from "./client";
 import { AssessmentGradeLevel } from "@sync/model/assessment-grade";
-import { Transaction } from "sequelize";
 import { AssessmentSubtest } from "@sync/model/assessment-subtest";
 import { DataResolverService } from "./data-resolver";
 
@@ -31,8 +30,10 @@ export class SyncService {
         console.log(`S3 metadata`, json.userName, json.returnControl);
         const jsonString: string = json.json;
         let resultArchiveId: string;
+        try {
         await dao.transaction(async (t) => {
-            resultArchiveId = await this.createResultArchive(jsonString);
+            console.log(`Before transaction for insert result archive`);
+            resultArchiveId = await this.createResultArchive(jsonString, t);            
         });
         await dao.transaction(async (t) => {
             // todo call audit service setAuditUser
@@ -72,12 +73,17 @@ export class SyncService {
             }
             // todo clear audit user in auditService
         
-        });
+        });        
+        } finally {
+           
+        }
+        console.log(`All done here `);
         return true;
     }
 
 
-    private async createResultArchive(json: string): Promise<string> {
+    private async createResultArchive(json: string, transaction: any): Promise<string> {
+        console.log(`Entering createResultArchive`);
         const guidRes = await this.queryIntf.getSequalize().query('select sys_guid() as guid', { type: Sequelize.QueryTypes.SELECT });
         const guid = guidRes[0].guid;
         const INSERT_QUERY: string = `
@@ -88,17 +94,18 @@ export class SyncService {
         await this.queryIntf.getSequalize().query({
             query: INSERT_QUERY,
             values: [guid, json]
-        });
+        }, { transaction });
+        console.log(`Got guid ${guid} for result archive`);
         return guid;
     }
 
 
-    private async applyAssessmentToResultArchive(assessmentId: string, resultArchiveId: string, t: any): Promise<void> {
+    private async applyAssessmentToResultArchive(assessmentId: string, resultArchiveId: string, transaction: any): Promise<void> {
         const UPDATE_QUERY: string = "update RESULT_ARCHIVE set MESSAGE = ?, ASSESSMENT_ID = ? where ID = ?"
         await this.queryIntf.getSequalize().query({
             query: UPDATE_QUERY,
             values: ["Export Content Parsed", assessmentId, resultArchiveId]
-        });
+        }, { transaction });
         return;
     }
 
