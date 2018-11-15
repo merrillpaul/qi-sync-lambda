@@ -66,7 +66,7 @@ export class SyncService {
                 await this.applyAssessmentToResultArchive(assessment.id, resultArchiveId, t);
                 assessment.syncSucceeded = true;
                 await assessment.save();
-                
+                await this.s3Service.deleteObject(jsonS3Key);
             } catch (e) {
                 t.rollback();
                 console.error(`Error in sync`, e);

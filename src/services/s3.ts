@@ -37,4 +37,18 @@ export class S3Service {
             });
         });
     }
+
+    public async deleteObject(objectName: string, bucket: string = BUCKET_NAME): Promise<void> {
+        return new Promise<void>((res, rej) => {
+            console.info(`Deleting S3 object ${objectName} from bucket ${bucket}`);
+            this.s3.deleteObject({
+                Bucket: bucket,
+                Key: objectName
+            }, (err: AWSError) => {
+                // we dont care about the outcome
+                console.info(`Deleted`);
+                res();
+            });
+        });
+    }
 }
