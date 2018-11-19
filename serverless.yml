@@ -8,16 +8,22 @@ provider:
   region: ${opt:region, self:custom.defaultRegion}
   environment: ${file(./src/config/env.yml):${opt:stage, self:custom.defaults.stage}}
   timeout: 10
-  # vpc:
-  #   securityGroupIds:
-  #     - sg-3710345f
-  #   subnetIds:
-  #     - subnet-8a0f7fc7
-  #     - subnet-fa0cf192
+  vpc:
+    securityGroupIds:
+      - sg-02cdc4f2478397847
+    subnetIds:
+      - subnet-0e12699796f47d785 
+      - subnet-0f7af2abefe8d0ce9
+      #- { "Fn::GetAtt", [ "rdslambdasub2", "Subnet ID" ] }
   iamRoleStatements:
       - Effect: Allow
         Action:
           - s3:*
+          - "ec2:CreateNetworkInterface"
+          - "ec2:DescribeNetworkInterfaces"
+          - "ec2:DetachNetworkInterface"
+          - "ec2:DeleteNetworkInterface"
+          - "ssm:GetParameters"
         Resource: "*"
 
 custom:
@@ -49,7 +55,6 @@ functions:
   resultJsonS3Hook:
     handler: src/handlers/s3-json.handle
     events:
-      #- s3: resultjsons        
       - existingS3:
           bucket: ${self:custom.names.s3.bucket_name}
           events: 
@@ -71,6 +76,12 @@ plugins:
  
 # resources:
 #   Resources:
+#     rdslambdasg:
+#         Type: AWS::EC2::SecurityGroup
+#         DeletionPolicy: Retain
+#         Properties:
+#           GroupName: rdslambdasub2
+#           GroupDescription: Lambda execution security group
 #       S3Bucket:
 #         Type: AWS::S3::Bucket
 #         DeletionPolicy: Retain

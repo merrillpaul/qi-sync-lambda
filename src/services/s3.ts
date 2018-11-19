@@ -10,10 +10,14 @@ export class S3Service {
     private s3: S3;
 
     constructor() {
-        this.s3 = new S3({
-            s3ForcePathStyle: true,
-            endpoint: process.env.S3_DOMAIN as string
-        });
+        let s3Config : any = {};
+        if (process.env.S3_DOMAIN ) { // just for local s3 emulation with offline mode
+            s3Config = {
+                s3ForcePathStyle: true,
+                endpoint: process.env.S3_DOMAIN as string
+            }
+        }
+        this.s3 = new S3(s3Config);
     }
 
 

@@ -15,6 +15,7 @@ export class QueryService {
             password: process.env.DB_PASSWORD as string,
             host: process.env.DB_HOST as string,
             port: parseInt(process.env.DB_PORT as string, 10),
+            logging: JSON.parse((process.env.LOGGING || false ) as string),
             operatorsAliases: false,
             define: {
                 timestamps: false,

@@ -27,6 +27,13 @@ export class SyncService {
     public async sync(jsonS3Key: string): Promise<boolean> {
         const dao: Sequelize = this.queryIntf.getSequalize();
         const json: JsonUpload = await this.s3Service.readObjectAsText(jsonS3Key);
+        /*const json: JsonUpload = {
+            userName: 'James',
+            returnControl: false,
+            json: `{
+                assessment: "asdadsad"
+            }`
+        };*/
         console.log(`S3 metadata`, json.userName, json.returnControl);
         const jsonString: string = json.json;
         let resultArchiveId: string;
