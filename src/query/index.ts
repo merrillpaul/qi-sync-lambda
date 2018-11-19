@@ -9,11 +9,11 @@ export class QueryService {
 
     constructor() {
         this.sequalize = new Sequelize({
-            database: process.env.DB as string,
+            database: (process.env.DB as string).trim(),
             dialect: 'postgres',
-            username: process.env.DB_USER as string,
-            password: process.env.DB_PASSWORD as string,
-            host: process.env.DB_HOST as string,
+            username: (process.env.DB_USER as string).trim(),
+            password: (process.env.DB_PASSWORD as string).trim(),
+            host: (process.env.DB_HOST as string).trim(),
             port: parseInt(process.env.DB_PORT as string, 10),
             logging: JSON.parse((process.env.LOGGING || false ) as string) ? console.log: false,
             operatorsAliases: false,

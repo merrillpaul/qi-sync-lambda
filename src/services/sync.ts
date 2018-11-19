@@ -80,9 +80,11 @@ export class SyncService {
             }
             // todo clear audit user in auditService
         
-        });        
+        });  
+        } catch (e) {
+            console.error(`Error in creating result archive`, e);  
         } finally {
-           
+           // ignored
         }
         console.log(`All done here `);
         return true;
