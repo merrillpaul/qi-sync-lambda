@@ -31,6 +31,9 @@ The above subnets and lambda security group are referenced in the `serverless.ym
 - https://aws.amazon.com/blogs/aws/new-vpc-endpoint-for-amazon-s3/
 
 
+### DB Params
+DB params are configured in AWS SSM. This is referenced in [env.yml](src/config/env.yml). 
+![AWS SSM Parameters](docs/aws_ssm_db_params.png "SSM ")
 
 ## Deploy
 `AWS_ACCESS_KEY_ID=Axxxxxx AWS_SECRET_ACCESS_KEY=Jxxxxxxxxx npm run deploy`

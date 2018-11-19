@@ -39,10 +39,10 @@ custom:
   webpack:
     includeModules: true # enable auto-packing of external modules
 
-  remover:
-      prompt: true
-      buckets:
-         - ${self:service}-dev-resultsjson 
+  # remover:
+  #     prompt: true
+  #     buckets:
+  #        - ${self:service}-dev-resultsjson 
       
      
 functions:
